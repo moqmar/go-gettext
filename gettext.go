@@ -4,6 +4,7 @@ package gettext
 
 import (
 	"fmt"
+	"io/fs"
 	"os"
 	"path"
 	"sync"
@@ -17,8 +18,11 @@ type TextDomain struct {
 	// Name is the name of the text domain
 	Name string
 	// LocaleDir is the base directory holding translations of the
-	// domain.  If it is empty, DefaultLocaleDir will be used.
+	// domain.  If it is empty, DefaultLocaleDir will be used if LocaleFS is nil; otherwise the root of LocaleFS will be used.
 	LocaleDir string
+	// LocaleFS is the filesystem used to access LocaleDir.
+	// When nil, the normal OS filesystem will be used.
+	LocaleFS fs.FS
 	// PathResolver is called to determine the path of a
 	// particular locale's translations.  If it is nil then
 	// DefaultResolver will be used, which implements the standard
@@ -62,7 +66,7 @@ func (t *TextDomain) load(locale string) *mocatalog {
 	}
 
 	localeDir := t.LocaleDir
-	if localeDir == "" {
+	if localeDir == "" && t.LocaleFS == nil {
 		localeDir = DefaultLocaleDir
 	}
 	resolver := t.PathResolver
@@ -71,7 +75,13 @@ func (t *TextDomain) load(locale string) *mocatalog {
 	}
 	t.cache[locale] = nil
 	path := resolver(localeDir, locale, t.Name)
-	f, err := os.Open(path)
+	var f fs.File
+	var err error
+	if t.LocaleFS != nil {
+		f, err = t.LocaleFS.Open(path)
+	} else {
+		f, err = os.Open(path)
+	}
 	if err != nil {
 		return nil
 	}

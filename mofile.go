@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
+	"io/fs"
 	"os"
 	"sort"
 	"strings"
@@ -223,7 +224,7 @@ func ParseMO(file *os.File) (Catalog, error) {
 	return Catalog{[]*mocatalog{mo}}, nil
 }
 
-func parseMO(file *os.File) (*mocatalog, error) {
+func parseMO(file fs.File) (*mocatalog, error) {
 	m, err := openMapping(file)
 	if err != nil {
 		return nil, err

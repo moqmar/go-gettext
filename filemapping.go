@@ -2,8 +2,8 @@ package gettext
 
 import (
 	"fmt"
+	"io/fs"
 	"io/ioutil"
-	"os"
 	"runtime"
 )
 
@@ -21,7 +21,7 @@ func (m *fileMapping) Close() error {
 	return m.closeMapping()
 }
 
-func openMapping(f *os.File) (*fileMapping, error) {
+func openMapping(f fs.File) (*fileMapping, error) {
 	fi, err := f.Stat()
 	if err != nil {
 		return nil, err
