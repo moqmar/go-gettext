@@ -18,9 +18,13 @@ requiring a context string respectively.
 ```go
 import "github.com/snapcore/go-gettext"
 
+//go:embed translations
+var assets embed.FS
+
 domain := &gettext.TextDomain{
 	Name:      "messages",
-	LocaleDir: "path/to/translations",
+	LocaleDir: "./translations",
+	LocaleFS:  assets,  // leave away to use the filesystem directly
 }
 // or use domain.Locale(lang...) to open a different locale's catalog
 locale := domain.UserLocale()

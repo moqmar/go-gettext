@@ -271,3 +271,12 @@ func TestNotMoFile(t *testing.T) {
 	)
 
 }
+
+func TestFS(t *testing.T) {
+	// Can't use go:embed here for compatibility reasons as it's only supported since Go 1.16
+	testdata := os.DirFS("./testdata")
+
+	translations := &TextDomain{Name: "messages", LocaleDir: ".", LocaleFS: testdata, PathResolver: my_resolver}
+	en := translations.Locale("en")
+	assert_equal(t, en.Gettext("greeting"), "Hello")
+}
