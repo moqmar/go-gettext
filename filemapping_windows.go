@@ -1,16 +1,19 @@
 package gettext
 
 import (
-	"os"
 	"syscall"
 	"unsafe"
 )
 
 // Adapted from https://github.com/golang/exp/blob/master/mmap/mmap_windows.go
 
-func (m *fileMapping) tryMap(f *os.File, size int64) error {
+func (m *fileMapping) tryMap(f fs.File, size int64) error {
+	var of, ok = f.(*os.File)
+	if !ok {
+		return errors.New("virtual filesystem doesn't support mmap")
+	}
 	low, high := uint32(size), uint32(size>>32)
-	fmap, err := syscall.CreateFileMapping(syscall.Handle(f.Fd()), nil, syscall.PAGE_READONLY, high, low, nil)
+	fmap, err := syscall.CreateFileMapping(syscall.Handle(of.Fd()), nil, syscall.PAGE_READONLY, high, low, nil)
 	if err != nil {
 		return err
 	}
