@@ -1,6 +1,8 @@
 package gettext
 
 import (
+	"io/fs"
+	"os"
 	"syscall"
 	"unsafe"
 )
