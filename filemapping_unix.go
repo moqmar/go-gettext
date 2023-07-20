@@ -12,7 +12,7 @@ import (
 
 func (m *fileMapping) tryMap(f fs.File, size int64) error {
 	var err error
-	var of, ok = f.(*os.File)
+	of, ok := f.(*os.File)
 	if !ok {
 		return errors.New("virtual filesystem doesn't support mmap")
 	}

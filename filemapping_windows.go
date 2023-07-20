@@ -8,7 +8,7 @@ import (
 // Adapted from https://github.com/golang/exp/blob/master/mmap/mmap_windows.go
 
 func (m *fileMapping) tryMap(f fs.File, size int64) error {
-	var of, ok = f.(*os.File)
+	of, ok := f.(*os.File)
 	if !ok {
 		return errors.New("virtual filesystem doesn't support mmap")
 	}
