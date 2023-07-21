@@ -1,6 +1,7 @@
 package gettext
 
 import (
+	"errors"
 	"io/fs"
 	"os"
 	"syscall"
